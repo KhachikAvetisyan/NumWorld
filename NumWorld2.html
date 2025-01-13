@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NumWorld</title>
+    <style>
+        /* === CSS SECTION === */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .header {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+        #messages {
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #fafafa;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #555;
+        }
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- === HTML SECTION === -->
+    <div class="header">
+        <h1>NumWorld</h1>
+    </div>
+    <div class="container">
+        <div id="chatSection" class="hidden">
+            <h2>Chat Room</h2>
+            <div id="messages"></div>
+            <input type="text" id="chatInput" placeholder="Type your message..." />
+            <button id="sendBtn">Send</button>
+        </div>
+        <div id="signupSection">
+            <h2>Sign Up</h2>
+            <form id="signupForm">
+                <input type="text" placeholder="Username (optional)" id="username" />
+                <input type="password" placeholder="Password" id="password" required />
+                <button type="submit">Sign Up</button>
+            </form>
+            <p>Already have an account? <a href="#" id="loginLink">Login</a></p>
+        </div>
+    </div>
+    <script>
+        // === JavaScript SECTION ===
+        let userCounter = 0; // Keeps track of the user count
+        let users = JSON.parse(localStorage.getItem('users')) || []; // Load users from localStorage
+
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Increment user counter and assign a unique number
+            userCounter++;
+            const userNumber = userCounter;
+
+            // Get optional username, if provided
+            const username = document.getElementById('username').value || `User${userNumber}`;
+
+            // Get password (not used further for this demo)
+            const password = document.getElementById('password').value;
+
+            // Store user details
+            users.push({ number: userNumber, username, password });
+            localStorage.setItem('users', JSON.stringify(users)); // Save to localStorage
+
+            alert(`Welcome, ${username}! Your unique number is: ${userNumber}`);
+            
+            // Switch to chat section
+            document.getElementById('signupSection').classList.add('hidden');
+            document.getElementById('chatSection').classList.remove('hidden');
+        });
+
+        document.getElementById('loginLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('signupSection').classList.add('hidden');
+            document.getElementById('chatSection').classList.remove('hidden');
+        });
+
+        document.getElementById('sendBtn').addEventListener('click', function() {
+            const message = document.getElementById('chatInput').value;
+            const messageContainer = document.getElementById('messages');
+            if (message.trim() !== "") {
+                const newMessage = document.createElement('div');
+                newMessage.textContent = `User${userCounter}: ${message}`;
+                messageContainer.appendChild(newMessage);
+                document.getElementById('chatInput').value = '';
+            }
+        });
+    </script>
+</body>
+</html>
